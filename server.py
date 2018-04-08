@@ -1,9 +1,5 @@
 #!/usr/bin/env python2.7
-
 """
-Columbia's COMS W4111.001 Introduction to Databases
-Example Webserver
-
 To run locally:
 
     python server.py
@@ -15,53 +11,26 @@ Read about it online.
 """
 
 import os
+from classes import *
 from sqlalchemy import *
+from sqlalchemy import exc
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 
-
-#
-# The following is a dummy URI that does not connect to a valid database. You will need to modify it to connect to your Part 2 database in order to use the data.
-#
-# XXX: The URI should be in the format of: 
-#
-#     postgresql://USER:PASSWORD@35.227.79.146/proj1part2
-#
-# For example, if you had username gravano and password foobar, then the following line would be:
-#
-#     DATABASEURI = "postgresql://gravano:foobar@35.227.79.146/proj1part2"
-#
-DATABASEURI = "postgresql://user:password@35.227.79.146/proj1part2"
-
-
-#
-# This line creates a database engine that knows how to connect to the URI above.
-#
+DATABASEURI = "postgresql://dsr2141:password@35.227.79.146/proj1part2"
 engine = create_engine(DATABASEURI)
 
-#
-# Example of running queries in your database
-# Note that this will probably not work if you already have a table named 'test' in your database, containing meaningful data. This is only an example showing you how to run queries in your database using SQLAlchemy.
-#
-engine.execute("""CREATE TABLE IF NOT EXISTS test (
-  id serial,
-  name text
-);""")
-engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
+#Reflect tables all at once: http://docs.sqlalchemy.org/en/latest/core/reflection.html
+meta = MetaData()
+meta.reflect(bind=engine)
 
 
+#Create database connection
 @app.before_request
 def before_request():
-  """
-  This function is run at the beginning of every web request 
-  (every time you enter an address in the web browser).
-  We use it to setup a database connection that can be used throughout the request.
-
-  The variable g is globally accessible.
-  """
   try:
     g.conn = engine.connect()
   except:
@@ -69,110 +38,212 @@ def before_request():
     import traceback; traceback.print_exc()
     g.conn = None
 
+#Close database connection
 @app.teardown_request
 def teardown_request(exception):
-  """
-  At the end of the web request, this makes sure to close the database connection.
-  If you don't, the database could run out of memory!
-  """
   try:
     g.conn.close()
   except Exception as e:
     pass
 
 
-#
-# @app.route is a decorator around index() that means:
-#   run index() whenever the user tries to access the "/" path using a GET request
-#
-# If you wanted the user to go to, for example, localhost:8111/foobar/ with POST or GET then you could use:
-#
-#       @app.route("/foobar/", methods=["POST", "GET"])
-#
-# PROTIP: (the trailing / in the path is important)
-# 
-# see for routing: http://flask.pocoo.org/docs/0.10/quickstart/#routing
-# see for decorators: http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/
-#
+#Home page
 @app.route('/')
 def index():
-  """
-  request is a special object that Flask provides to access web request information:
-
-  request.method:   "GET" or "POST"
-  request.form:     if the browser submitted a form, this contains the data in the form
-  request.args:     dictionary of URL arguments, e.g., {a:1, b:2} for http://localhost?a=1&b=2
-
-  See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
-  """
-
-  # DEBUG: this is debugging code to see what request looks like
   print request.args
+  return render_template("index.html")
 
-
-  #
-  # example of a database query
-  #
-  cursor = g.conn.execute("SELECT name FROM test")
-  names = []
-  for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
+#Users page
+@app.route('/user_selects')
+def user_selects():
+  cursor = g.conn.execute('SELECT * FROM User_Selects JOIN Teams ON User_Selects.team_id = Teams.team_id ORDER BY user_name ASC')
+  table = user_selects_view(cursor)
   cursor.close()
+  return render_template('user_selects.html', table=table)
 
-  #
-  # Flask uses Jinja templates, which is an extension to HTML where you can
-  # pass data to a template and dynamically generate HTML based on the data
-  # (you can think of it as simple PHP)
-  # documentation: https://realpython.com/blog/python/primer-on-jinja-templating/
-  #
-  # You can see an example template in templates/index.html
-  #
-  # context are the variables that are passed to the template.
-  # for example, "data" key in the context variable defined below will be 
-  # accessible as a variable in index.html:
-  #
-  #     # will print: [u'grace hopper', u'alan turing', u'ada lovelace']
-  #     <div>{{data}}</div>
-  #     
-  #     # creates a <div> tag for each element in data
-  #     # will print: 
-  #     #
-  #     #   <div>grace hopper</div>
-  #     #   <div>alan turing</div>
-  #     #   <div>ada lovelace</div>
-  #     #
-  #     {% for n in data %}
-  #     <div>{{n}}</div>
-  #     {% endfor %}
-  #
-  context = dict(data = names)
+#Search for users
+@app.route('/user_selects', methods=['POST'])
+def user_selects_search():
+  search_name = request.form['search_name'].encode('ascii', 'ignore')
+  cursor = g.conn.execute("SELECT * FROM User_Selects JOIN Teams ON User_Selects.team_id = Teams.team_id WHERE user_name LIKE '%" + search_name + "%'")
+
+  matches = cursor.fetchall()
+  cursor.close()
+  table = get_user_selects_view(matches)
+  return render_template('user_selects.html', table=table)
+
+#Add user 
+@app.route('/add_user', methods=['POST']
+def add_user_selects():
+  user_selects = meta.tables['user_selects']
+  user_id = request.form['user_id']
+  user_name = request.form['user_name']
+  team_id = request.form['team_id']
+
+  insert = user_selects.insert().values(user_id=user_id, user_name=user_name, team_id=team_id)
+
+  try:
+    g.conn.execute(insert)
+  except exc.SQLAlchemyError:
+    return render_template('user_selects.html', message='Insert failed.')
+  return redirect('/user_selects')
+
+#Players page
+@app.route('/players')
+def players():
+  cursor = g.conn.execute("SELECT * FROM Players ORDER BY player_name ASC")
+  table = player_view(cursor)
+  cursor.close()
+  return render_template("players.html", table=table)
+
+#Search for player
+@app.route('/player_search', methods=['POST'])
+def player_search():
+  search_name = request.form['search_name'].encode('ascii', 'ignore')
+  cursor = g.conn.execute("SELECT * FROM Players WHERE player_name LIKE '%" + search_name + "%'")
+
+  matches = cursor.fetchall()
+  cursor.close()
+  table = get_players_view(matches)
+  return render_template('players.html', table=table) 
+
+#Add player
+@app.route('/add_player', methods=['POST'])
+def add_player():
+  players = meta.tables['players']
+  player_id = request.form['player_id']
+  player_name = request.form['player_name']
+  player_dob = request.form['player_dob']
+  height = request.form['height']
+  weight = request.form['weight']
+  overall_rating = request.form['overall_rating']
+  potential = request.form['potential']
+  team_id = request.form['potential']
+
+  insert = players.insert().values(player_id=player_id, player_name=player_name, 
+	 player_dob=player_dob, height=height, weight=weight, 
+	 overall_rating=overall_rating, potential=potential, team_id=team_id)
+
+  try:
+    g.conn.execute(insert)
+  except exc.SQLAlchemyError:
+    return render_template('players.html', message='Insert failed.')
+  return redirect('/players')
+
+#Goalkeeper page
+@app.route('/goal_keeper')
+def goal_keeper():
+  cursor = g.conn.execute('SELECT * FROM Players JOIN Goal_Keeper ON Players.player_id=Goal_Keeper.player_id ORDER BY player_name ASC')
+  table = goal_keeper_view(cursor)
+  cursor.close()
+  return render_template('goal_keeper.html', table=table)
+
+#Add goalkeeper 
+@app.route('/add_goal_keeper', methods=['POST'])
+def add_goal_keeper():
+  goal_keeper = meta.tables['goal_keeper']
+  player_id = request.form['player_id']
+  gk_diving_rating = request.form['gk_diving_rating']
+  gk_reflexes_rating = request.form['gk_reflexes_rating']
+  
+  insert = goal_keeper.insert().values(player_id=player_id, gk_diving_rating=gk_diving_rating, gk_reflexes_rating=gk_reflexes_rating)
+
+  try:
+    g.conn.execute(insert)
+  except exc.SQLAlchemyError:
+    return render_template('goal_keeper.html', message='Insert Failed')
+  return redirect('/goal_keeper')
+
+#Defender page
+@app.route('/defender')
+def defender():
+  cursor = g.conn.edecute('SELECT * FROM Players JOIN Defender ON Players.player_id=Defender.player_id ORDER BY player_name ASC')
+  table = defender_view(cursor)
+  cursor.close()
+  return render_template('defender.html', table=table)
+
+#Add defender
+@app.route('/add_defender', methods=['POST'])
+def add_defender():
+  defender = meta.tables['defender']
+  player_id = request.form['player_id']
+  aggression_rating = request.form['aggression_rating']
+  marking_rating = request.form['marking_rating']
+  
+  insert = defender.insert().values(player_id=player_id, aggression_rating=aggression_rating, marking_rating=marking_rating)
+
+  try:
+    g.conn.execute(insert)
+  except exc.SQLAlchemyError:
+    return render_template('defender.html', message='Insert Failed')
+  return redirect('/defender')
+
+#Midfielder page
+@app.route('/defender')
+def defender():
+  cursor = g.conn.edecute('SELECT * FROM Players JOIN Midfielder ON Players.player_id=Midfielder.player_id ORDER BY player_name ASC')
+  table = defender_view(cursor)
+  cursor.close()
+  return render_template('midfielder.html', table=table)
+
+#Add Midfielder
+@app.route('/add_midfielder', methods=['POST'])
+def add_defender():
+  midfielder = meta.tables['midfielder']
+  player_id = request.form['player_id']
+  preferred_foot = request.form['preferred_foot']
+  crossing_rating = request.form['crossing_rating']
+
+  insert = midfielder.insert().values(player_id=player_id, preferred_foot=preferred_foot, crossing_rating=crossing_rating)
+
+  try:
+    g.conn.execute(insert)
+  except exc.SQLAlchemyError:
+    return render_template('midfielder.html', message='Insert Failed')
+  return redirect('/midfielder')
 
 
-  #
-  # render_template looks in the templates/ folder for files.
-  # for example, the below file reads template/index.html
-  #
-  return render_template("index.html", **context)
+#Forward page
+@app.route('/forward')
+def forward():
+  cursor = g.conn.edecute('SELECT * FROM Players JOIN Forward ON Players.player_id=Forward.player_id ORDER BY player_name ASC')
+  table = defender_view(cursor)
+  cursor.close()
+  return render_template('forward.html', table=table)
 
-#
-# This is an example of a different path.  You can see it at:
-# 
-#     localhost:8111/another
-#
-# Notice that the function name is another() rather than index()
-# The functions for each app.route need to have different names
-#
-@app.route('/another')
-def another():
-  return render_template("another.html")
+#Add Forward
+@app.route('/add_forward', methods=['POST'])
+def add_forward():
+  forward = meta.tables['forward']
+  player_id = request.form['player_id']
+  sprint_speed_rating = request.form['sprint_speed_rating']
+  shot_power_rating = request.form['shot_power_rating']
+
+  insert = forward.insert().values(player_id=player_id, sprint_speed_rating=sprint_speed_rating, shot_power_rating=shot_power_rating)
+
+  try:
+    g.conn.execute(insert)
+  except exc.SQLAlchemyError:
+    return render_template('forward.html', message='Insert Failed')
+  return redirect('/forward')
 
 
-# Example of adding new data to the database
-@app.route('/add', methods=['POST'])
-def add():
-  name = request.form['name']
-  g.conn.execute('INSERT INTO test(name) VALUES (%s)', name)
-  return redirect('/')
+#Delete player
+@app.route('/delete_player', methods=['POST'])
+def delete_player():
+  players = meta.tables['players']
+  player_id = request.form['player_id']
+  
+  delete = players.delete().where(players.c.player_id==player_id)
+ 
+  try:
+    g.conn.execute(delete)
+  except exc.SQLAlchemyError:
+    return render_template('players.html', message='Delete failed')
+  return redirect('/players')
+
+
+
 
 
 @app.route('/login')

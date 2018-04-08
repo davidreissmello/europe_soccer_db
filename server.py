@@ -73,7 +73,7 @@ def user_selects_search():
   return render_template('user_selects.html', table=table)
 
 #Add user 
-@app.route('/add_user', methods=['POST']
+@app.route('/add_user', methods=['POST'])
 def add_user_selects():
   user_selects = meta.tables['user_selects']
   user_id = request.form['user_id']
@@ -243,8 +243,87 @@ def delete_player():
   return redirect('/players')
 
 
+#View specific user players
+@app.route('/user_players', methods=['POST'])
+def user_players():
+  search_name = request.form['search_name'].encode('ascii', 'ignore')
+  cursor = g.conn.execute("SELECT * FROM User_Player JOIN User_Selects ON User_Selects.user_id = User_Player.user_id JOIN Players ON User_Player.player_id = Player.player_id WHERE user_name LIKE '%" + search_name + "%'")
+  matches = cursor.fetchall()
+  cursor.close()
+  table = get_user_players_view(matches)
+  return render_template('user_players.html', table=table)
 
 
+#View Teams
+@app.route('/teams')
+def teams():
+  cursor = g.conn.edecute('SELECT * FROM Teams')
+  table = teams_view(cursor)
+  cursor.close()
+  return render_template('teams.html', table=table)
+
+
+#View Team Roster
+@app.route('/team_roster', methods=['POST'])
+def team_roster():
+  search_name = request.form['search_name'].encode('ascii', 'ignore')
+  cursor = g.conn.execute("SELECT * FROM Teams JOIN Players ON Players.team_id = Teams.team_id WHERE team_name LIKE '%" + search_name + "%'")
+
+  matches = cursor.fetchall()
+  cursor.close()
+  table = get_team_roster_view(matches)
+  return render_template('team_roster.html', table=table)
+
+
+#View leagues
+@app.route('/league')
+def league():
+  cursor = g.conn.edecute('SELECT * FROM League JOIN Country ON League.country_id=Country.country_id')
+  table = league_view(cursor)
+  cursor.close()
+  return render_template('league.html', table=table)
+
+#View Teams in a league
+@app.route('/team_league', methods=['POST'])
+def league_search():
+  search_name = request.form['search_name'].encode('ascii', 'ignore')
+  cursor = g.conn.execute("SELECT * FROM Team_League JOIN Teams ON Team_League.team_id = Teams.team_id JOIN League ON Team_League.league_id = League.league_id  WHERE league_name LIKE '%" + search_name + "%'")
+
+  matches = cursor.fetchall()
+  cursor.close()
+  table = get_team_league_view(matches)
+  return render_template('team_league.html', table=table)
+
+
+#View Countries 
+@app.route('/country')
+def country():
+  cursor = g.conn.edecute('SELECT * FROM Country')
+  table = country_view(cursor)
+  cursor.close()
+  return render_template('country.html', table=table)
+
+#View leagues in country
+@app.route('/league_country', methods=['POST'])
+def user_selects_search():
+  search_name = request.form['search_name'].encode('ascii', 'ignore')
+  cursor = g.conn.execute("SELECT * FROM League JOIN Country ON League.country_id = Country.country_id WHERE country_name LIKE '%" + search_name + "%'")
+
+  matches = cursor.fetchall()
+  cursor.close()
+  table = get_league_country_view(matches)
+  return render_template('league_country.html', table=table)
+
+
+#View Matches
+@app.route('/matches')
+def matches():
+  cursor = g.conn.edecute('SELECT * FROM Matches')
+  table = matches_view(cursor)
+  cursor.close()
+  return render_template('matches.html', table=table)
+
+#Search matches 
 
 @app.route('/login')
 def login():

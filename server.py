@@ -1,19 +1,8 @@
 #!/usr/bin/env python2.7
-"""
-To run locally:
-
-    python server.py
-
-Go to http://localhost:8111 in your browser.
-
-A debugger such as "pdb" may be helpful for debugging.
-Read about it online.
-"""
 
 import os
 from classes import *
 from sqlalchemy import *
-from sqlalchemy import exc
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
 
@@ -27,14 +16,13 @@ engine = create_engine(DATABASEURI)
 meta = MetaData()
 meta.reflect(bind=engine)
 
-
 #Create database connection
 @app.before_request
 def before_request():
   try:
     g.conn = engine.connect()
   except:
-    print "uh oh, problem connecting to database"
+    print("uh oh, problem connecting to database")
     import traceback; traceback.print_exc()
     g.conn = None
 
@@ -50,7 +38,7 @@ def teardown_request(exception):
 #Home page
 @app.route('/')
 def index():
-  print request.args
+  print(request.args)
   return render_template("index.html")
 
 #Users page
@@ -179,16 +167,16 @@ def add_defender():
   return redirect('/defender')
 
 #Midfielder page
-@app.route('/defender')
-def defender():
+@app.route('/midfielder')
+def midfielder():
   cursor = g.conn.edecute('SELECT * FROM Players JOIN Midfielder ON Players.player_id=Midfielder.player_id ORDER BY player_name ASC')
-  table = defender_view(cursor)
+  table = midfielder_view(cursor)
   cursor.close()
   return render_template('midfielder.html', table=table)
 
 #Add Midfielder
 @app.route('/add_midfielder', methods=['POST'])
-def add_defender():
+def add_midfielder():
   midfielder = meta.tables['midfielder']
   player_id = request.form['player_id']
   preferred_foot = request.form['preferred_foot']
@@ -305,7 +293,7 @@ def country():
 
 #View leagues in country
 @app.route('/league_country', methods=['POST'])
-def user_selects_search():
+def league_country():
   search_name = request.form['search_name'].encode('ascii', 'ignore')
   cursor = g.conn.execute("SELECT * FROM League JOIN Country ON League.country_id = Country.country_id WHERE country_name LIKE '%" + search_name + "%'")
 
@@ -353,8 +341,6 @@ if __name__ == "__main__":
     """
 
     HOST, PORT = host, port
-    print "running on %s:%d" % (HOST, PORT)
+    print("running on " + str(HOST) + ":" + str(PORT))
     app.run(host=HOST, port=PORT, debug=debug, threaded=threaded)
-
-
   run()

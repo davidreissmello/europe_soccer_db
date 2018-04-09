@@ -13,8 +13,14 @@ DATABASEURI = "postgresql://dsr2141:password@35.227.79.146/proj1part2"
 engine = create_engine(DATABASEURI)
 
 #Reflect tables all at once: http://docs.sqlalchemy.org/en/latest/core/reflection.html
-meta = MetaData()
-meta.reflect(bind=engine)
+#meta = MetaData()
+#meta.reflect(bind=engine)
+ 
+engine.execute("""CREATE TABLE IF NOT EXISTS test (
+  id serial,
+  name text
+);""")
+engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 
 #Create database connection
 @app.before_request
@@ -39,7 +45,14 @@ def teardown_request(exception):
 @app.route('/')
 def index():
   print(request.args)
-  return render_template("index.html")
+  cursor = g.conn.execute("SELECT name FROM test")
+  names = []
+  for result in cursor:
+    names.append(result['name'])  # can also be accessed using result[0]
+  cursor.close()
+  context = dict(data = names)
+
+  return render_template("index.html", **context)
 
 #Users page
 @app.route('/user_selects')
@@ -341,6 +354,6 @@ if __name__ == "__main__":
     """
 
     HOST, PORT = host, port
-    print("running on " + str(HOST) + ":" + str(PORT))
+    print("running on %s:%d " % (HOST, PORT))
     app.run(host=HOST, port=PORT, debug=debug, threaded=threaded)
   run()

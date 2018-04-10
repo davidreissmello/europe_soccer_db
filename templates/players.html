@@ -1,27 +1,93 @@
-<h1>Players</h1>
-  <div> <h4>Click a column heading to toggle ascending/descending order</h4></div>
-  <table class="sortable">
-  <tr>
-    <th>Player ID</th>
-    <th>Player Name</th>
-    <th>Date of Birth</th>
-    <th>Height</th>
-    <th>Weight</th>
-    <th>Overall Rating</th>
-    <th>Potential</th>
-    <th>Team ID</th>
-  </tr>    
-  {% for item in table %}
-  <tr>
-    <td class="c2" style="text-align:center">{{item.player_id}}</td>
-    <td class="c3">{{item.player_name}}</td>
-    <td class="c3">{{item.player_dob}}</td>
-    <td class="c3" style="text-align:center">{{item.height}}</td>
-    <td class="c3" style="text-align:center">{{item.weight}}</td>
-    <td class="c3" style="text-align:center">{{item.overall_rating}}</td>
-    <td class="c3" style="text-align:center">{{item.potential}}</td>
-    <td class="c3" style="text-align:center">{{item.team_id}}</td>
-  </tr>
-  {% endfor %}
-  </table>
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <h1>Players</h1>
+  
+  <p><a href="goal_keeper">Goal Keepers</a></p>
+  <p><a href="defender">Defender</a></p>
+  <p><a href="midfielder">Midfielder</a></p>
+  <p><a href="forward">Forward</a></p>
+  <hr>
 
+  <div><h4>Add player</h4></div>
+  <form method="POST" action="/add_player">
+      <table class="table1">
+          <tr>
+              <td align="left">User ID:</td>
+              <td align="left"><input type="text" name="user_id"></td>
+              <td align="left">Player ID:</td>
+              <td align="left"><input type="text" name="player_id"></td>
+              <td align="left">Name:</td>
+              <td align="left"><input type="text" name="player_name"></td>
+              <td align="left">Date of birth:</td>
+              <td align="left"><input type="text" name="player_dob"></td>
+          </tr>
+          <tr>
+              <td align="left">Height:</td>
+              <td align="left"><input type="text" name="height"></td>
+              <td align="left">Weight:</td>
+              <td align="left"><input type="text" name="weight"></td>
+              <td align="left">Overall Rating:</td>
+              <td align="left"><input type="text" name="overall_rating"></td>
+              <td align="left">Potential:</td>
+              <td align="left"><input type="text" name="potential"></td>
+          </tr>
+          <tr>
+              <td align="left">Team ID:</td>
+              <td align="left"><input type="text" name="team_id"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Add">
+  </form>
+  <hr>
+
+  <div><h4>Delete player</h4></div>
+  <form method="POST" action="/delete_player">
+      <p>Delete player with player_id: <input type="text" name="player_id">
+      <input type="submit" value="Delete">
+      </p>
+  </form>
+  <hr>
+
+
+  <div><h4>Search for player</h4></div>
+  <form method="POST" action="/player_search">
+      <table class="table1">
+          <tr>
+              <td align="left">Search Name:</td>
+              <td align="left"><input type="text" name="search_name"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Search">
+  </form>
+  <hr>
+  
+  <table class="sortable">
+      <tr>
+          <th>Player ID</th>
+          <th>Player Name</th>
+          <th>Date of Birth</th>
+          <th>Height</th>
+          <th>Weight</th>
+          <th>Overall Rating</th>
+          <th>Potential</th>
+          <th>Team ID</th>
+      </tr>    
+      {% for item in table %}
+      <tr>
+      <td class="c2" style="text-align:center">{{item.player_id}}</td>
+      <td class="c3">{{item.player_name}}</td>
+      <td class="c3">{{item.player_dob}}</td>
+      <td class="c3" style="text-align:center">{{item.height}}</td>
+      <td class="c3" style="text-align:center">{{item.weight}}</td>
+      <td class="c3" style="text-align:center">{{item.overall_rating}}</td>
+      <td class="c3" style="text-align:center">{{item.potential}}</td>
+      <td class="c3" style="text-align:center">{{item.team_id}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</html>

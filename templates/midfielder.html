@@ -1,0 +1,56 @@
+<html> 
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <h1>Midfielders</h1>
+  
+  
+  <div><h4>Add midfielder</h4></div>
+  <form method="POST" action="/add_midfielder">
+      <table class="table1">
+          <tr>
+              <td align="left">Player ID:</td>
+              <td align="left"><input type="text" name="player_id"></td>
+              <td align="left">Preferred Foot:</td>
+              <td align="left"><input type="text" name="preferred_foot"></td>
+              <td align="left">Crossing Rating:</td>
+              <td align="left"><input type="text" name="crossing_rating"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Add">
+  </form>
+  <hr>
+
+  <table class="sortable">
+      <tr>
+          <th>Player ID</th>
+          <th>Player Name</th>
+          <th>Date of Birth</th>
+          <th>Height</th>
+          <th>Weight</th>
+          <th>Overall Rating</th>
+          <th>Potential</th>
+          <th>Team ID</th>
+          <th>Preferred Foot</th>
+          <th>Crossing Rating</th>
+      </tr>    
+      {% for item in table %}
+      <tr>
+      <td class="c2" style="text-align:center">{{item.player_id}}</td>
+      <td class="c3">{{item.player_name}}</td>
+      <td class="c3">{{item.player_dob}}</td>
+      <td class="c3" style="text-align:center">{{item.height}}</td>
+      <td class="c3" style="text-align:center">{{item.weight}}</td>
+      <td class="c3" style="text-align:center">{{item.overall_rating}}</td>
+      <td class="c3" style="text-align:center">{{item.potential}}</td>
+      <td class="c3" style="text-align:center">{{item.team_id}}</td>
+      <td class="c3" style="text-align:center">{{item.gk_diving_rating}}</td>
+      <td class="c3" style="text-align:center">{{item.preferred_foot}}</td>
+      <td class="c3" style="text-align:center">{{item.crossing_rating}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</html>

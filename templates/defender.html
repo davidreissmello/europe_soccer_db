@@ -1,0 +1,56 @@
+<html> 
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <h1>Defenders</h1>
+  
+  
+  <div><h4>Add defender</h4></div>
+  <form method="POST" action="/add_defender">
+      <table class="table1">
+          <tr>
+              <td align="left">Player ID:</td>
+              <td align="left"><input type="text" name="player_id"></td>
+              <td align="left">Aggression Rating:</td>
+              <td align="left"><input type="text" name="aggression_rating"></td>
+              <td align="left">Marking Rating:</td>
+              <td align="left"><input type="text" name="marking_rating"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Add">
+  </form>
+  <hr>
+
+  <table class="sortable">
+      <tr>
+          <th>Player ID</th>
+          <th>Player Name</th>
+          <th>Date of Birth</th>
+          <th>Height</th>
+          <th>Weight</th>
+          <th>Overall Rating</th>
+          <th>Potential</th>
+          <th>Team ID</th>
+          <th>Aggression Rating</th>
+          <th>Marking Rating</th>
+      </tr>    
+      {% for item in table %}
+      <tr>
+      <td class="c2" style="text-align:center">{{item.player_id}}</td>
+      <td class="c3">{{item.player_name}}</td>
+      <td class="c3">{{item.player_dob}}</td>
+      <td class="c3" style="text-align:center">{{item.height}}</td>
+      <td class="c3" style="text-align:center">{{item.weight}}</td>
+      <td class="c3" style="text-align:center">{{item.overall_rating}}</td>
+      <td class="c3" style="text-align:center">{{item.potential}}</td>
+      <td class="c3" style="text-align:center">{{item.team_id}}</td>
+      <td class="c3" style="text-align:center">{{item.gk_diving_rating}}</td>
+      <td class="c3" style="text-align:center">{{item.aggression_rating}}</td>
+      <td class="c3" style="text-align:center">{{item.marking_rating}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</html>

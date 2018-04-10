@@ -1,0 +1,55 @@
+<html> 
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <h1>Forwards</h1>
+  
+  
+  <div><h4>Forward</h4></div>
+  <form method="POST" action="/add_forward">
+      <table class="table1">
+          <tr>
+              <td align="left">Player ID:</td>
+              <td align="left"><input type="text" name="player_id"></td>
+              <td align="left">Sprint Speed Rating:</td>
+              <td align="left"><input type="text" name="sprint_speed_rating"></td>
+              <td align="left">Shot Power Rating:</td>
+              <td align="left"><input type="text" name="shot_power_rating"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Add">
+  </form>
+  <hr>
+
+  <table class="sortable">
+      <tr>
+          <th>Player ID</th>
+          <th>Player Name</th>
+          <th>Date of Birth</th>
+          <th>Height</th>
+          <th>Weight</th>
+          <th>Overall Rating</th>
+          <th>Potential</th>
+          <th>Team ID</th>
+          <th>Sprint Speed Rating</th>
+          <th>Shot Power Rating</th>
+      </tr>    
+      {% for item in table %}
+      <tr>
+      <td class="c2" style="text-align:center">{{item.player_id}}</td>
+      <td class="c3">{{item.player_name}}</td>
+      <td class="c3">{{item.player_dob}}</td>
+      <td class="c3" style="text-align:center">{{item.height}}</td>
+      <td class="c3" style="text-align:center">{{item.weight}}</td>
+      <td class="c3" style="text-align:center">{{item.overall_rating}}</td>
+      <td class="c3" style="text-align:center">{{item.potential}}</td>
+      <td class="c3" style="text-align:center">{{item.team_id}}</td>
+      <td class="c3" style="text-align:center">{{item.sprint_speed_rating}}</td>
+      <td class="c3" style="text-align:center">{{item.shot_power_rating}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</html>

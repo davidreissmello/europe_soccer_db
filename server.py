@@ -13,9 +13,9 @@ DATABASEURI = "postgresql://dsr2141:password@35.227.79.146/proj1part2"
 engine = create_engine(DATABASEURI)
 
 #Reflect tables all at once: http://docs.sqlalchemy.org/en/latest/core/reflection.html
-#meta = MetaData()
-#meta.reflect(bind=engine)
- 
+meta = MetaData()
+meta.reflect(bind=engine)
+
 engine.execute("""CREATE TABLE IF NOT EXISTS test (
   id serial,
   name text
@@ -66,14 +66,15 @@ def user_selects():
 @app.route('/user_selects', methods=['POST'])
 def user_selects_search():
   search_name = request.form['search_name'].encode('ascii', 'ignore')
-  cursor = g.conn.execute("SELECT * FROM User_Selects JOIN Teams ON User_Selects.team_id = Teams.team_id WHERE user_name LIKE '%" + search_name + "%'")
+  sql = "SELECT * FROM User_Selects JOIN Teams ON User_Selects.team_id = Teams.team_id WHERE user_name LIKE '%" + search_name + "%'"
+  cursor = g.conn.execute(sql)
 
   matches = cursor.fetchall()
   cursor.close()
   table = get_user_selects_view(matches)
   return render_template('user_selects.html', table=table)
 
-#Add user 
+#Add user
 @app.route('/add_user', methods=['POST'])
 def add_user_selects():
   user_selects = meta.tables['user_selects']
@@ -100,18 +101,21 @@ def players():
 #Search for player
 @app.route('/player_search', methods=['POST'])
 def player_search():
-  search_name = request.form['search_name'].encode('ascii', 'ignore')
-  cursor = g.conn.execute("SELECT * FROM Players WHERE player_name LIKE '%" + search_name + "%'")
-
+  search_name = request.form['search_name']
+  sql = "SELECT * FROM Players WHERE player_name LIKE" + "'%%" + str(search_name) + "%%'"
+  cursor = g.conn.execute(sql)
   matches = cursor.fetchall()
   cursor.close()
-  table = get_players_view(matches)
-  return render_template('players.html', table=table) 
+  table = player_view(matches)
+  return render_template('players.html', table=table)
 
 #Add player
 @app.route('/add_player', methods=['POST'])
 def add_player():
   players = meta.tables['players']
+  user_player = meta.tables['user_player']
+
+  user_id = request.form['user_id']
   player_id = request.form['player_id']
   player_name = request.form['player_name']
   player_dob = request.form['player_dob']
@@ -119,16 +123,18 @@ def add_player():
   weight = request.form['weight']
   overall_rating = request.form['overall_rating']
   potential = request.form['potential']
-  team_id = request.form['potential']
+  team_id = request.form['team_id']
 
-  insert = players.insert().values(player_id=player_id, player_name=player_name, 
-	 player_dob=player_dob, height=height, weight=weight, 
-	 overall_rating=overall_rating, potential=potential, team_id=team_id)
+  insert = players.insert().values(player_id=player_id, player_name=player_name,
+          player_dob=player_dob, height=height, weight=weight,
+          overall_rating=overall_rating, potential=potential, team_id=team_id)
 
+  insert2 = user_player.insert().values(user_id=user_id, player_id=player_id)
   try:
-    g.conn.execute(insert)
+      g.conn.execute(insert)
+      g.conn.execute(insert2)
   except exc.SQLAlchemyError:
-    return render_template('players.html', message='Insert failed.')
+      return render_template('players.html', message='Insert failed.')
   return redirect('/players')
 
 #Goalkeeper page
@@ -139,14 +145,14 @@ def goal_keeper():
   cursor.close()
   return render_template('goal_keeper.html', table=table)
 
-#Add goalkeeper 
+#Add goalkeeper
 @app.route('/add_goal_keeper', methods=['POST'])
 def add_goal_keeper():
   goal_keeper = meta.tables['goal_keeper']
   player_id = request.form['player_id']
   gk_diving_rating = request.form['gk_diving_rating']
   gk_reflexes_rating = request.form['gk_reflexes_rating']
-  
+
   insert = goal_keeper.insert().values(player_id=player_id, gk_diving_rating=gk_diving_rating, gk_reflexes_rating=gk_reflexes_rating)
 
   try:
@@ -158,7 +164,7 @@ def add_goal_keeper():
 #Defender page
 @app.route('/defender')
 def defender():
-  cursor = g.conn.edecute('SELECT * FROM Players JOIN Defender ON Players.player_id=Defender.player_id ORDER BY player_name ASC')
+  cursor = g.conn.execute('SELECT * FROM Players JOIN Defender ON Players.player_id=Defender.player_id ORDER BY player_name ASC')
   table = defender_view(cursor)
   cursor.close()
   return render_template('defender.html', table=table)
@@ -170,7 +176,7 @@ def add_defender():
   player_id = request.form['player_id']
   aggression_rating = request.form['aggression_rating']
   marking_rating = request.form['marking_rating']
-  
+
   insert = defender.insert().values(player_id=player_id, aggression_rating=aggression_rating, marking_rating=marking_rating)
 
   try:
@@ -182,7 +188,7 @@ def add_defender():
 #Midfielder page
 @app.route('/midfielder')
 def midfielder():
-  cursor = g.conn.edecute('SELECT * FROM Players JOIN Midfielder ON Players.player_id=Midfielder.player_id ORDER BY player_name ASC')
+  cursor = g.conn.execute('SELECT * FROM Players JOIN Midfielder ON Players.player_id=Midfielder.player_id ORDER BY player_name ASC')
   table = midfielder_view(cursor)
   cursor.close()
   return render_template('midfielder.html', table=table)
@@ -207,8 +213,8 @@ def add_midfielder():
 #Forward page
 @app.route('/forward')
 def forward():
-  cursor = g.conn.edecute('SELECT * FROM Players JOIN Forward ON Players.player_id=Forward.player_id ORDER BY player_name ASC')
-  table = defender_view(cursor)
+  cursor = g.conn.execute('SELECT * FROM Players JOIN Forward ON Players.player_id=Forward.player_id ORDER BY player_name ASC')
+  table = forward_view(cursor)
   cursor.close()
   return render_template('forward.html', table=table)
 
@@ -234,11 +240,11 @@ def add_forward():
 def delete_player():
   players = meta.tables['players']
   player_id = request.form['player_id']
-  
-  delete = players.delete().where(players.c.player_id==player_id)
- 
+
+  dele = players.delete().where(players.c.player_id==player_id)
+
   try:
-    g.conn.execute(delete)
+    g.conn.execute(dele)
   except exc.SQLAlchemyError:
     return render_template('players.html', message='Delete failed')
   return redirect('/players')
@@ -296,7 +302,7 @@ def league_search():
   return render_template('team_league.html', table=table)
 
 
-#View Countries 
+#View Countries
 @app.route('/country')
 def country():
   cursor = g.conn.edecute('SELECT * FROM Country')
@@ -324,7 +330,7 @@ def matches():
   cursor.close()
   return render_template('matches.html', table=table)
 
-#Search matches 
+#Search matches
 
 @app.route('/login')
 def login():

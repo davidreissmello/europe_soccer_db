@@ -45,7 +45,7 @@ def player_view(cursor):
     entry = dict(player_id=player_id[key], player_name=player_name[key], player_dob=player_dob[key], height=height[key], weight=weight[key], overall_rating=overall_rating[key], potential=potential[key], team_id=team_id[key])
     table.append(entry)
 
-  return table    
+  return table
 
 def goal_keeper_view(cursor):
   table = []
@@ -64,11 +64,11 @@ def goal_keeper_view(cursor):
     player_id.append(line['player_id'])
     player_name.append(line['player_name'])
     player_dob.append(line['player_dob'])
-    height.append(line['height']) 
-    weight.append(line['weight']) 
-    overall_rating.append(line['overall_rating']) 
-    potential.append(line['potential']) 
-    team_id.append(line['team_id']) 
+    height.append(line['height'])
+    weight.append(line['weight'])
+    overall_rating.append(line['overall_rating'])
+    potential.append(line['potential'])
+    team_id.append(line['team_id'])
     gk_diving_rating.append(line['gk_diving_rating'])
     gk_reflexes_rating.append(line['gk_reflexes_rating'])
 
@@ -97,13 +97,13 @@ def defender_view(cursor):
     player_id.append(line['player_id'])
     player_name.append(line['player_name'])
     player_dob.append(line['player_dob'])
-    height.append(line['height']) 
-    weight.append(line['weight']) 
-    overall_rating.append(line['overall_rating']) 
-    potential.append(line['potential']) 
-    team_id.append(line['team_id']) 
+    height.append(line['height'])
+    weight.append(line['weight'])
+    overall_rating.append(line['overall_rating'])
+    potential.append(line['potential'])
+    team_id.append(line['team_id'])
     aggression_rating.append(line['aggression_rating'])
-    marking_rating.append(line['marking_rating'])    
+    marking_rating.append(line['marking_rating'])
 
   for key in range(len(player_id)):
     entry = dict(player_id=player_id[key], aggression_rating=aggression_rating[key], marking_rating=marking_rating[key], player_name=player_name[key], player_dob=player_dob[key], height=height[key], weight=weight[key], overall_rating=overall_rating[key], potential=potential[key], team_id=team_id[key])
@@ -128,11 +128,11 @@ def midfielder_view(cursor):
     player_id.append(line['player_id'])
     player_name.append(line['player_name'])
     player_dob.append(line['player_dob'])
-    height.append(line['height']) 
-    weight.append(line['weight']) 
-    overall_rating.append(line['overall_rating']) 
-    potential.append(line['potential']) 
-    team_id.append(line['team_id']) 
+    height.append(line['height'])
+    weight.append(line['weight'])
+    overall_rating.append(line['overall_rating'])
+    potential.append(line['potential'])
+    team_id.append(line['team_id'])
     preferred_foot.append(line['preferred_foot'])
     crossing_rating.append(line['crossing_rating'])
 
@@ -160,12 +160,12 @@ def forward_view(cursor):
     player_id.append(line['player_id'])
     player_name.append(line['player_name'])
     player_dob.append(line['player_dob'])
-    height.append(line['height']) 
-    weight.append(line['weight']) 
-    overall_rating.append(line['overall_rating']) 
-    potential.append(line['potential']) 
-    team_id.append(line['team_id']) 
-    sprint_speed_rating.append(line['sprint_speed_rating']) 
+    height.append(line['height'])
+    weight.append(line['weight'])
+    overall_rating.append(line['overall_rating'])
+    potential.append(line['potential'])
+    team_id.append(line['team_id'])
+    sprint_speed_rating.append(line['sprint_speed_rating'])
     shot_power_rating.append(line['shot_power_rating'])
 
   for key in range(len(player_id)):
@@ -193,11 +193,11 @@ def user_players_view(cursor):
     player_id.append(line['player_id'])
     player_name.append(line['player_name'])
     player_dob.append(line['player_dob'])
-    height.append(line['height']) 
-    weight.append(line['weight']) 
-    overall_rating.append(line['overall_rating']) 
-    potential.append(line['potential']) 
-    team_id.append(line['team_id']) 
+    height.append(line['height'])
+    weight.append(line['weight'])
+    overall_rating.append(line['overall_rating'])
+    potential.append(line['potential'])
+    team_id.append(line['team_id'])
     user_id.append(line['user_id'])
     user_name.append(line['user_name'])
 
@@ -218,7 +218,7 @@ def team_view(cursor):
     team_id.append(line['team_id'])
     team_long_name.append(line['team_long_name'])
     team_short_name.append(line['team_short_name'])
- 
+
   for key in range(len(team_id)):
     entry = dict(team_id = team_id[key], team_long_name=team_long_name[key], team_short_name = team_short_name[key])
     table.append(entry)
@@ -243,11 +243,11 @@ def team_roster_view(cursor):
     player_id.append(line['player_id'])
     player_name.append(line['player_name'])
     player_dob.append(line['player_dob'])
-    height.append(line['height']) 
-    weight.append(line['weight']) 
-    overall_rating.append(line['overall_rating']) 
-    potential.append(line['potential']) 
-    team_id.append(line['team_id']) 
+    height.append(line['height'])
+    weight.append(line['weight'])
+    overall_rating.append(line['overall_rating'])
+    potential.append(line['potential'])
+    team_id.append(line['team_id'])
     team_long_name.append(line['team_long_name'])
     team_short_name.append(line['team_short_name'])
 
@@ -275,7 +275,7 @@ def league_view(cursor):
     entry = dict(league_id=league_id[key], country_id=country_id[key], league_name=league_name[key], country_name=country_name[key])
     table.append(entry)
 
-  return table 
+  return table
 
 
 def team_league_view(cursor):
@@ -288,7 +288,7 @@ def team_league_view(cursor):
   league_name = []
   country_name = []
 
-  for line in cursor: 
+  for line in cursor:
     team_id.append(line['team_id'])
     team_long_name.append(line['team_long_name'])
     team_short_name.append(line['team_short_name'])
@@ -296,7 +296,7 @@ def team_league_view(cursor):
     country_id.append(line['country_id'])
     league_name.append(line['league_name'])
     country_name.append(line['country_name'])
-  
+
   for key in range(len(team_id)):
     entry = dict(team_id = team_id[key], team_long_name=team_long_name[key], team_short_name = team_short_name[key], league_id=league_id[key], country_id=country_id[key], league_name=league_name[key], country_name=country_name[key])
     table.append(entry)
@@ -316,7 +316,7 @@ def country_view(cursor):
     entry = dict(country_id=country_id[key], country_name=country_name[key])
     table.append(entry)
 
-  return table 
+  return table
 
 
 def matches_view(cursor):

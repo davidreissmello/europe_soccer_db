@@ -1,0 +1,58 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <h1>Users</h1>
+  
+  <p><a href="user_players">User Players</a></p>
+
+  <div><h4>Add user</h4></div>
+  <form method="POST" action="/add_user">
+      <table class="table1">
+          <tr>
+              <td align="left">User ID:</td>
+              <td align="left"><input type="text" name="user_id"></td>
+              <td align="left">User Name:</td>
+              <td align="left"><input type="text" name="user_name"></td>
+              <td align="left">Team ID:</td>
+              <td align="left"><input type="text" name="team_id"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Add">
+  </form>
+  <hr>
+
+  <div><h4>Search for users</h4></div>
+  <form method="POST" action="/user_selects_search">
+      <table class="table1">
+          <tr>
+              <td align="left">Search User Name:</td>
+              <td align="left"><input type="text" name="search_name"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Search">
+  </form>
+  <hr>
+  
+  <table class="sortable">
+      <tr>
+          <th>User ID</th>
+          <th>User Name</th>
+          <th>Team ID</th>
+          <th>Team Long Name</th>
+          <th>Team Short Name</th>
+      </tr>    
+      {% for item in table %}
+      <tr>
+      <td class="c2" style="text-align:center">{{item.user_id}}</td>
+      <td class="c3">{{item.user_name}}</td>
+      <td class="c3">{{item.team_id}}</td>
+      <td class="c3" style="text-align:center">{{item.team_long_name}}</td>
+      <td class="c3" style="text-align:center">{{item.team_short_name}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</html>

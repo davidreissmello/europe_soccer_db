@@ -1,0 +1,44 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <h1>Matches</h1>
+
+  <div><h4>Search for matches by a team</h4></div>
+  <form method="POST" action="/match_search">
+      <table class="table1">
+          <tr>
+              <td align="left">Team ID:</td>
+              <td align="left"><input type="text" name="search_name"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Search">
+  </form>
+  <hr>
+  
+  <table class="sortable">
+      <tr>
+          <th>Season</th>
+          <th>Stage</th>
+          <th>Match Date</th>
+          <th>Home Team ID</th>
+          <th>Away Team ID</th>
+          <th>Home Team Goals</th>
+          <th>Away Team Goals</th>
+      </tr>    
+      {% for item in table %}
+      <tr>
+      <td class="c2" style="text-align:center">{{item.season}}</td>
+      <td class="c3">{{item.stage}}</td>
+      <td class="c3">{{item.match_date}}</td>
+      <td class="c3" style="text-align:center">{{item.home_team_id}}</td>
+      <td class="c3" style="text-align:center">{{item.away_team_id}}</td>
+      <td class="c3" style="text-align:center">{{item.home_team_goals}}</td>
+      <td class="c3" style="text-align:center">{{item.away_team_goals}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</html>

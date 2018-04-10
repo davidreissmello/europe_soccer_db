@@ -261,7 +261,7 @@ def team_roster_view(cursor):
 def league_view(cursor):
   table = []
   league_id = []
-  coutry_id = []
+  country_id = []
   league_name = []
   country_name = []
 
@@ -284,9 +284,8 @@ def team_league_view(cursor):
   team_long_name = []
   team_short_name = []
   league_id = []
-  coutry_id = []
+  country_id = []
   league_name = []
-  country_name = []
 
   for line in cursor:
     team_id.append(line['team_id'])
@@ -295,10 +294,9 @@ def team_league_view(cursor):
     league_id.append(line['league_id'])
     country_id.append(line['country_id'])
     league_name.append(line['league_name'])
-    country_name.append(line['country_name'])
 
   for key in range(len(team_id)):
-    entry = dict(team_id = team_id[key], team_long_name=team_long_name[key], team_short_name = team_short_name[key], league_id=league_id[key], country_id=country_id[key], league_name=league_name[key], country_name=country_name[key])
+    entry = dict(team_id = team_id[key], team_long_name=team_long_name[key], team_short_name = team_short_name[key], league_id=league_id[key], country_id=country_id[key], league_name=league_name[key])
     table.append(entry)
 
   return table

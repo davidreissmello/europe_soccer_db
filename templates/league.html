@@ -1,0 +1,38 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <h1>Leagues</h1>
+
+  <div><h4>Search for leagues in a specific country</h4></div>
+  <form method="POST" action="/league_country">
+      <table class="table1">
+          <tr>
+              <td align="left">Country Name:</td>
+              <td align="left"><input type="text" name="search_name"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Search">
+  </form>
+  <hr>
+  
+  <table class="sortable">
+      <tr>
+          <th>League ID</th>
+          <th>League Name</th>
+          <th>Country ID</th>
+          <th>Country Name</th>
+      </tr>    
+      {% for item in table %}
+      <tr>
+      <td class="c2" style="text-align:center">{{item.league_id}}</td>
+      <td class="c3">{{item.league_name}}</td>
+      <td class="c3">{{item.country_id}}</td>
+      <td class="c3" style="text-align:center">{{item.country_name}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</html>

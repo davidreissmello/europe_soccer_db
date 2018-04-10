@@ -1,5 +1,12 @@
 <html>
+  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
   <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+
     body{ 
       font-size: 15pt;
       font-family: arial;
@@ -7,6 +14,7 @@
   </style>
   <h1>Players</h1>
   
+  <div><h4>Click on the links below to explore specific types of players</h4></div>
   <p><a href="goal_keeper">Goal Keepers</a></p>
   <p><a href="defender">Defender</a></p>
   <p><a href="midfielder">Midfielder</a></p>
@@ -14,13 +22,13 @@
   <p><a href="user_players">User Players</a></p>
   <hr>
 
-  <div><h4>Add player</h4></div>
+  <div><h4>Log in by entering your username and add a player</h4></div>
   <form method="POST" action="/add_player">
       <table class="table1">
           <tr>
-              <td align="left">User ID:</td>
+              <td align="left">Your User ID:</td>
               <td align="left"><input type="text" name="user_id"></td>
-              <td align="left">Player ID:</td>
+              <td align="left">Unique Player ID:</td>
               <td align="left"><input type="text" name="player_id"></td>
               <td align="left">Name:</td>
               <td align="left"><input type="text" name="player_name"></td>
@@ -76,7 +84,7 @@
           <th>Weight</th>
           <th>Overall Rating</th>
           <th>Potential</th>
-          <th>Team ID</th>
+          <th>Team Name</th>
       </tr>    
       {% for item in table %}
       <tr>

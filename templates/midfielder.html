@@ -1,5 +1,10 @@
 <html> 
+  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
   <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+}
     body{ 
       font-size: 15pt;
       font-family: arial;
@@ -24,7 +29,18 @@
   </form>
   <hr>
 
-  <table class="sortable">
+  <div><h4>Search for player</h4></div>
+  <form method="POST" action="/search_midfielder">
+      <table class="table1">
+          <tr>
+              <td align="left">Search Name:</td>
+              <td align="left"><input type="text" name="search_name"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Search">
+  </form>
+  <hr>
+  <table class="sortable" style="width:100%">
       <tr>
           <th>Player ID</th>
           <th>Player Name</th>
@@ -47,7 +63,6 @@
       <td class="c3" style="text-align:center">{{item.overall_rating}}</td>
       <td class="c3" style="text-align:center">{{item.potential}}</td>
       <td class="c3" style="text-align:center">{{item.team_id}}</td>
-      <td class="c3" style="text-align:center">{{item.gk_diving_rating}}</td>
       <td class="c3" style="text-align:center">{{item.preferred_foot}}</td>
       <td class="c3" style="text-align:center">{{item.crossing_rating}}</td>
     </tr>

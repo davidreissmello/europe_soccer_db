@@ -213,14 +213,16 @@ def team_view(cursor):
   team_id = []
   team_long_name = []
   team_short_name = []
+  team_rating = []
 
   for line in cursor:
     team_id.append(line['team_id'])
     team_long_name.append(line['team_long_name'])
     team_short_name.append(line['team_short_name'])
+    team_rating.append(line['team_rating'])
 
   for key in range(len(team_id)):
-    entry = dict(team_id = team_id[key], team_long_name=team_long_name[key], team_short_name = team_short_name[key])
+    entry = dict(team_id = team_id[key], team_long_name=team_long_name[key], team_short_name = team_short_name[key], team_rating = team_rating[key])
     table.append(entry)
 
   return table
@@ -286,6 +288,7 @@ def team_league_view(cursor):
   league_id = []
   country_id = []
   league_name = []
+  team_rating = []
 
   for line in cursor:
     team_id.append(line['team_id'])
@@ -294,9 +297,10 @@ def team_league_view(cursor):
     league_id.append(line['league_id'])
     country_id.append(line['country_id'])
     league_name.append(line['league_name'])
+    team_rating.append(line['team_rating'])
 
   for key in range(len(team_id)):
-    entry = dict(team_id = team_id[key], team_long_name=team_long_name[key], team_short_name = team_short_name[key], league_id=league_id[key], country_id=country_id[key], league_name=league_name[key])
+    entry = dict(team_id = team_id[key], team_long_name=team_long_name[key], team_short_name = team_short_name[key], league_id=league_id[key], country_id=country_id[key], league_name=league_name[key], team_rating=team_rating[key])
     table.append(entry)
 
   return table
@@ -338,6 +342,21 @@ def matches_view(cursor):
 
   for key in range(len(season)):
     entry = dict(season = season[key], stage = stage[key], match_date=match_date[key], home_team_id=home_team_id[key], away_team_id=away_team_id[key], home_team_goals=home_team_goals[key], away_team_goals=away_team_goals[key])
+    table.append(entry)
+
+  return table
+
+def prediction_view(cursor):
+  table = []
+  team_long_name = []
+  difference = []
+
+  for line in cursor:
+    team_long_name.append(line['team_long_name'])
+    difference.append(line['difference'])
+
+  for key in range(len(team_long_name)):
+    entry = dict(team_long_name=team_long_name[key], difference=difference[key])
     table.append(entry)
 
   return table

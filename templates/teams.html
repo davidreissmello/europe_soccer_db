@@ -1,13 +1,20 @@
 <html>
+  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
   <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+
     body{ 
       font-size: 15pt;
       font-family: arial;
     }
   </style>
   <h1>Teams</h1>
-
-  <div><h4>Search for a specific league</h4></div>
+  <p><a href="team_roster">Click here to search for a team's roster</a></p>
+  <div><h4>Search for a all teams in a league</h4></div>
   <form method="POST" action="/team_league">
       <table class="table1">
           <tr>
@@ -19,25 +26,33 @@
   </form>
   <hr>
   
+  <div><h4>Search for similar teams based on the overall rating</h4></div>
+  <form method="POST" action="/similar_teams">
+      <table class="table1">
+          <tr>
+              <td align="left">Team Name:</td>
+              <td align="left"><input type="text" name="search_name"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Search">
+  </form>
+  <hr>
+
   <table class="sortable">
       <tr>
           <th>Team ID</th>
           <th>Team Long Name</th>
           <th>Team Short Name</th>
-          <th>League ID</th>
-          <th>Country ID</th>
           <th>League Name</th>
-          <th>League ID</th>
+          <th>Team Rating</th>
       </tr>    
       {% for item in table %}
       <tr>
-      <td class="c2" style="text-align:center">{{item.team_id}}</td>
+      <td class="c3">{{item.team_id}}</td>
       <td class="c3">{{item.team_long_name}}</td>
       <td class="c3">{{item.team_short_name}}</td>
-      <td class="c3" style="text-align:center">{{item.league_id}}</td>
-      <td class="c3" style="text-align:center">{{item.country_id}}</td>
       <td class="c3" style="text-align:center">{{item.league_name}}</td>
-      <td class="c3" style="text-align:center">{{item.league_id}}</td>
+      <td class="c3" style="text-align:center">{{item.team_rating}}</td>
     </tr>
     {% endfor %}
     </table>

@@ -1,5 +1,12 @@
 <html>
+  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
   <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+
     body{ 
       font-size: 15pt;
       font-family: arial;
@@ -7,17 +14,17 @@
   </style>
   <h1>Users</h1>
   
-  <p><a href="user_players">User Players</a></p>
+  <p><a href="user_players">Click here to log-in and view all of your players</a></p>
 
-  <div><h4>Add user</h4></div>
+  <div><h4>If you are a new user, please create an account here</h4></div>
   <form method="POST" action="/add_user">
       <table class="table1">
           <tr>
-              <td align="left">User ID:</td>
+              <td align="left">Create a User ID:</td>
               <td align="left"><input type="text" name="user_id"></td>
-              <td align="left">User Name:</td>
+              <td align="left">Create a User Name:</td>
               <td align="left"><input type="text" name="user_name"></td>
-              <td align="left">Team ID:</td>
+              <td align="left">Enter the Team ID of your favorite team:</td>
               <td align="left"><input type="text" name="team_id"></td>
           </tr>
       </table><br>
@@ -25,7 +32,21 @@
   </form>
   <hr>
 
-  <div><h4>Search for users</h4></div>
+    <div><h4>To update your favorite team, enter your username and new favorite team's id</h4></div>
+  <form method="POST" action="/update_user_team">
+      <table class="table1">
+          <tr>
+              <td align="left">User ID:</td>
+              <td align="left"><input type="text" name="user_id"></td>
+              <td align="left">Team ID:</td>
+              <td align="left"><input type="text" name="team_id"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Update">
+  </form>
+  <hr>
+
+  <div><h4>Search for other users and their favorite teams</h4></div>
   <form method="POST" action="/user_selects_search">
       <table class="table1">
           <tr>

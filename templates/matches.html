@@ -1,5 +1,12 @@
 <html>
+  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
   <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+
     body{ 
       font-size: 15pt;
       font-family: arial;
@@ -7,11 +14,11 @@
   </style>
   <h1>Matches</h1>
 
-  <div><h4>Search for matches by a team</h4></div>
+  <div><h4>Search for all matches by a team</h4></div>
   <form method="POST" action="/match_search">
       <table class="table1">
           <tr>
-              <td align="left">Team ID:</td>
+              <td align="left">Team Name:</td>
               <td align="left"><input type="text" name="search_name"></td>
           </tr>
       </table><br>
@@ -24,8 +31,8 @@
           <th>Season</th>
           <th>Stage</th>
           <th>Match Date</th>
-          <th>Home Team ID</th>
-          <th>Away Team ID</th>
+          <th>Home Team</th>
+          <th>Away Team</th>
           <th>Home Team Goals</th>
           <th>Away Team Goals</th>
       </tr>    

@@ -1,0 +1,44 @@
+<html>
+  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+  <h1>Score Predictor</h1>
+
+  <div><h4>Predict scores based on the home team's performance on past home games and the away team's performance on past away games!</h4></div>
+  <form method="POST" action="/prediction_search">
+      <table class="table1">
+          <tr>
+              <td align="left">Home Team:</td>
+              <td align="left"><input type="text" name="home_team"></td>
+              <td align="left">Away Team:</td>
+              <td align="left"><input type="text" name="away_team"></td>
+          </tr>
+      </table><br>
+      <input type="submit" value="Search">
+  </form>
+  <hr>
+  
+  <table class="sortable">
+      <tr>
+          <th>Team Name</th>
+          <th>Predicted Score</th>
+      </tr>    
+      {% for item in table %}
+      <tr>
+      <td class="c2" style="text-align:center">{{item.team_long_name}}</td>
+      <td class="c3" style="text-align:center">{{item.difference}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</html>
+

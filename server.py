@@ -69,10 +69,10 @@ def add_user_selects():
   user_name = request.form['user_name']
   team_id = request.form['team_id']
 
-  insert = user_selects.insert().values(user_id=user_id, user_name=user_name, team_id=team_id)
+  sql = "INSERT INTO user_selects values(" + str(user_id)+ ", '" + str(user_name) + "' ," + str(team_id) + ")"
 
   try:
-    g.conn.execute(insert)
+    g.conn.execute(sql)
   except:
     print("the process was unable to be completed")
     import traceback; traceback.print_exc()
@@ -86,9 +86,10 @@ def update_user_team():
   user_id = request.form['user_id']
   team_id = request.form['team_id']
 
-  update = user_selects.update().where(user_selects.c.user_id == user_id).values(team_id=team_id)
+  sql = "UPDATE user_selects SET team_id = " + str(team_id) + " WHERE user_id=" + str(user_id)
+
   try:
-    g.conn.execute(update)
+    g.conn.execute(sql)
   except:
     print("the process was unable to be completed")
     import traceback; traceback.print_exc()
@@ -133,18 +134,24 @@ def add_player():
   potential = request.form['potential']
   team_id = request.form['team_id']
 
-  insert = players.insert().values(player_id=player_id, player_name=player_name,
-          player_dob=player_dob, height=height, weight=weight,
-          overall_rating=overall_rating, potential=potential, team_id=team_id)
+  sql = "INSERT INTO players(player_id,player_name,player_dob,height,weight,overall_rating,potential,team_id) VALUES (" + str(player_id) + ",' " + str(player_name) + "','" + str(player_dob) + "'," + str(height) + "," + str (weight) + "," +  str(overall_rating) + "," + str(potential) + "," +  str(team_id) + ")"
 
-  insert2 = user_player.insert().values(user_id=user_id, player_id=player_id)
+  sql2 = "INSERT INTO user_player(user_id, player_id) VALUES (" + str(user_id) + "," + str(player_id) + ")"
+
   try:
-      g.conn.execute(insert)
-      g.conn.execute(insert2)
+    g.conn.execute(sql)
+    g.conn.execute(sql2)
   except:
     print("the process was unable to be completed")
     import traceback; traceback.print_exc()
-    g.conn = None
+    sql = "DELETE FROM Players WHERE player_id=" + str(player_id)
+    try:
+        g.conn.execute(sql)
+    except:
+        print("the process was unable to be completed")
+        import traceback; traceback.print_exc()
+        g.conn = None
+
   return redirect('/players')
 
 #Goalkeeper page
@@ -174,10 +181,10 @@ def add_goal_keeper():
   gk_diving_rating = request.form['gk_diving_rating']
   gk_reflexes_rating = request.form['gk_reflexes_rating']
 
-  insert = goal_keeper.insert().values(player_id=player_id, gk_diving_rating=gk_diving_rating, gk_reflexes_rating=gk_reflexes_rating)
+  sql = "INSERT INTO goal_keeper(player_id,gk_diving_rating,gk_reflexes_rating) VALUES (" + str(player_id) + "," + str(gk_diving_rating) + "," + str(gk_reflexes_rating) + ")"
 
   try:
-    g.conn.execute(insert)
+    g.conn.execute(sql)
   except:
     print("the process was unable to be completed")
     import traceback; traceback.print_exc()
@@ -213,10 +220,10 @@ def add_defender():
   aggression_rating = request.form['aggression_rating']
   marking_rating = request.form['marking_rating']
 
-  insert = defender.insert().values(player_id=player_id, aggression_rating=aggression_rating, marking_rating=marking_rating)
+  sql = "INSERT INTO defender(player_id,aggression_rating,marking_rating) VALUES (" + str(player_id) + "," + str(aggression_rating) + "," + str(marking_rating) + ")"
 
   try:
-    g.conn.execute(insert)
+    g.conn.execute(sql)
   except:
     print("the process was unable to be completed")
     import traceback; traceback.print_exc()
@@ -250,10 +257,10 @@ def add_midfielder():
   preferred_foot = request.form['preferred_foot']
   crossing_rating = request.form['crossing_rating']
 
-  insert = midfielder.insert().values(player_id=player_id, preferred_foot=preferred_foot, crossing_rating=crossing_rating)
+  sql = "INSERT INTO midfielder(player_id,preferred_foot,crossing_rating) VALUES (" + str(player_id) + ",'" + str(preferred_foot) + "'," + str(crossing_rating) + ")"
 
   try:
-    g.conn.execute(insert)
+    g.conn.execute(sql)
   except:
     print("the process was unable to be completed")
     import traceback; traceback.print_exc()
@@ -288,10 +295,10 @@ def add_forward():
   sprint_speed_rating = request.form['sprint_speed_rating']
   shot_power_rating = request.form['shot_power_rating']
 
-  insert = forward.insert().values(player_id=player_id, sprint_speed_rating=sprint_speed_rating, shot_power_rating=shot_power_rating)
+  sql = "INSERT INTO forward(player_id,sprint_speed_rating,shot_power_rating) VALUES (" + str(player_id) + "," + str(sprint_speed_rating) + "," + str(shot_power_rating) + ")"
 
   try:
-    g.conn.execute(insert)
+    g.conn.execute(sql)
   except:
     print("the process was unable to be completed")
     import traceback; traceback.print_exc()
@@ -305,10 +312,10 @@ def delete_player():
   players = meta.tables['players']
   player_id = request.form['player_id']
 
-  dele = players.delete().where(players.c.player_id==player_id)
+  sql = "DELETE FROM Players WHERE player_id=" + str(player_id)
 
   try:
-    g.conn.execute(dele)
+    g.conn.execute(sql)
   except:
     print("the process was unable to be completed")
     import traceback; traceback.print_exc()

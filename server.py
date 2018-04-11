@@ -73,8 +73,10 @@ def add_user_selects():
 
   try:
     g.conn.execute(insert)
-  except exc.SQLAlchemyError:
-    return render_template('user_selects.html', message='Insert failed.')
+  except:
+    print("the process was unable to be completed")
+    import traceback; traceback.print_exc()
+    g.conn = None
   return redirect('/user_selects')
 
 #Update User Team
@@ -87,8 +89,10 @@ def update_user_team():
   update = user_selects.update().where(user_selects.c.user_id == user_id).values(team_id=team_id)
   try:
     g.conn.execute(update)
-  except exc.SQLAlchemyError:
-    return render_template('user_selects.html', message='Update failed.')
+  except:
+    print("the process was unable to be completed")
+    import traceback; traceback.print_exc()
+    g.conn = None
   return redirect('/user_selects')
 
 
@@ -137,8 +141,10 @@ def add_player():
   try:
       g.conn.execute(insert)
       g.conn.execute(insert2)
-  except exc.SQLAlchemyError:
-      return render_template('players.html', message='Insert failed.')
+  except:
+    print("the process was unable to be completed")
+    import traceback; traceback.print_exc()
+    g.conn = None
   return redirect('/players')
 
 #Goalkeeper page
@@ -172,8 +178,11 @@ def add_goal_keeper():
 
   try:
     g.conn.execute(insert)
-  except exc.SQLAlchemyError:
-    return render_template('goal_keeper.html', message='Insert Failed')
+  except:
+    print("the process was unable to be completed")
+    import traceback; traceback.print_exc()
+    g.conn = None
+
   return redirect('/goal_keeper')
 
 #Defender page
@@ -208,8 +217,10 @@ def add_defender():
 
   try:
     g.conn.execute(insert)
-  except exc.SQLAlchemyError:
-    return render_template('defender.html', message='Insert Failed')
+  except:
+    print("the process was unable to be completed")
+    import traceback; traceback.print_exc()
+    g.conn = None
   return redirect('/defender')
 
 #Midfielder page
@@ -243,8 +254,10 @@ def add_midfielder():
 
   try:
     g.conn.execute(insert)
-  except exc.SQLAlchemyError:
-    return render_template('midfielder.html', message='Insert Failed')
+  except:
+    print("the process was unable to be completed")
+    import traceback; traceback.print_exc()
+    g.conn = None
   return redirect('/midfielder')
 
 
@@ -279,8 +292,10 @@ def add_forward():
 
   try:
     g.conn.execute(insert)
-  except exc.SQLAlchemyError:
-    return render_template('forward.html', message='Insert Failed')
+  except:
+    print("the process was unable to be completed")
+    import traceback; traceback.print_exc()
+    g.conn = None
   return redirect('/forward')
 
 
@@ -294,8 +309,10 @@ def delete_player():
 
   try:
     g.conn.execute(dele)
-  except exc.SQLAlchemyError:
-    return render_template('players.html', message='Delete failed')
+  except:
+    print("the process was unable to be completed")
+    import traceback; traceback.print_exc()
+    g.conn = None
   return redirect('/players')
 
 #View user players
@@ -334,7 +351,7 @@ def teams():
 @app.route('/team_league', methods=['POST'])
 def league_search():
   search_name = request.form['search_name']
-  sql = "SELECT P.team_id, team_long_name, team_short_name, League.league_id, league_name, country_id, avg(overall_rating) AS team_rating FROM Players P JOIN Teams ON P.team_id = Teams.team_id JOIN Team_League ON Teams.team_id = Team_League.team_id JOIN League ON League.league_id = Team_League.league_id WHERE League.league_name LIKE '%%" + str(search_name) + "%%' GROUP BY P.team_id, team_long_name, team_short_name, League.league_id, league_name, country_id"
+  sql = "SELECT P.team_id, team_long_name, team_short_name, League.league_id, league_name, country_id, avg(overall_rating) AS team_rating FROM Players P JOIN Teams ON P.team_id = Teams.team_id JOIN Team_League ON Teams.team_id = Team_League.team_id JOIN League ON League.league_id = Team_League.league_id WHERE League.league_name LIKE '%%" + str(search_name) + "%%' GROUP BY P.team_id, team_long_name, team_short_name, League.league_id, league_name, country_id ORDER BY avg(overall_rating) DESC"
   cursor = g.conn.execute(sql)
   matches = cursor.fetchall()
   cursor.close()
@@ -351,14 +368,6 @@ def similar_teams():
   cursor.close()
   table = team_league_view(matches)
   return render_template('teams.html', table=table)
-
-#View Similar Teams`
-
-def similar_teams():
-    search_name = request.form['search_name']
-    sql = "SELECT P.team_id, team_long_name, team_short_name, League.league_id, league_name, country_id, avg(overall_rating) AS team_rating FROM Players P JOIN Teams ON P.team_id = Teams.team_id JOIN Team_League ON Teams.team_id = Team_League.team_id JOIN League ON League.league_id = Team_League.league_id GROUP BY P.team_id, team_long_name, team_short_name, League.league_id, league_name, country_id HAVING avg(overall_rating) >= ((SELECT AVG(overall_rating) FROM Players P JOIN Teams ON P.team_id = Teams.team_id  WHERE team_long_name LIKE '%%" + str(search_name) + "%%') - 1) AND avg(overall_rating) <= ((SELECT AVG(overall_rating) FROM Players P JOIN Teams ON P.team_id = Teams.team_id WHERE team_long_name LIKE '%%" + str(search_name) + "%%') + 1) LIMIT 20"
-
-
 
 #View Team Roster
 @app.route('/team_roster')
@@ -435,7 +444,7 @@ def match_search():
 
 @app.route('/prediction')
 def prediction():
-  sql = "SELECT Teams.team_long_name, (SUM(home_team_goals) - SUM(away_team_goals))/COUNT(*) AS difference FROM Matches JOIN Teams ON Teams.team_id = Matches.home_team_id GROUP BY team_long_name UNION SELECT Teams.team_long_name, (SUM(away_team_goals) - SUM(home_team_goals))/COUNT(*) AS difference FROM Matches JOIN Teams ON Teams.team_id = Matches.home_team_id GROUP BY team_long_name"
+  sql = "SELECT Teams.team_long_name, (SUM(home_team_goals) - SUM(away_team_goals))/COUNT(Teams.team_long_name) AS difference FROM Matches JOIN Teams ON Teams.team_id = Matches.home_team_id GROUP BY team_long_name UNION SELECT Teams.team_long_name, (SUM(away_team_goals) - SUM(home_team_goals))/COUNT(Teams.team_long_name) AS difference FROM Matches JOIN Teams ON Teams.team_id = Matches.home_team_id GROUP BY team_long_name"
 
   cursor = g.conn.execute(sql)
 
@@ -450,7 +459,7 @@ def prediction_search():
   home_team = request.form['home_team']
   away_team = request.form['away_team']
 
-  sql = "SELECT Teams.team_long_name, (SUM(home_team_goals) - SUM(away_team_goals))/COUNT(*) AS difference FROM Matches JOIN Teams ON Teams.team_id = Matches.home_team_id WHERE Teams.team_long_name LIKE '" + str(home_team) + "' GROUP BY team_long_name UNION SELECT Teams.team_long_name, (SUM(away_team_goals) - SUM(home_team_goals))/COUNT(*) AS difference FROM Matches JOIN Teams ON Teams.team_id = Matches.home_team_id WHERE Teams.team_long_name LIKE '" + str(away_team) + "' GROUP BY team_long_name"
+  sql = "SELECT Teams.team_long_name, (SUM(home_team_goals) - SUM(away_team_goals))/COUNT(Teams.team_long_name) AS difference FROM Matches JOIN Teams ON Teams.team_id = Matches.home_team_id WHERE Teams.team_long_name LIKE '" + str(home_team) + "' GROUP BY team_long_name UNION SELECT Teams.team_long_name, (SUM(away_team_goals) - SUM(home_team_goals))/COUNT(Teams.team_long_name) AS difference FROM Matches JOIN Teams ON Teams.team_id = Matches.home_team_id WHERE Teams.team_long_name LIKE '" + str(away_team) + "' GROUP BY team_long_name"
 
   cursor = g.conn.execute(sql)
 

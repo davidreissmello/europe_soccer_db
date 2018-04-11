@@ -2,7 +2,7 @@ David Reiss-Mello
 
 Database account: dsr2141
 
-URL:
+URL: http://35.196.116.4:8111/ 
 
 Description of implemented features:
 1)
@@ -69,3 +69,8 @@ WHERE team_long_name LIKE 'Liverpool'
 GROUP BY team_long_name;
 
 Explanation: In the first half of the query, I took the sum of all the goals the home team has score while playing at home minus the sum of all the goals score on them when they have played at home. Then I divided it by the count to find the average number of goals they win or lose by. Then simply chose the team that corresponds to the home team indicated by the user. For the away team, do the same thing as for the home team but invert the home_team_goals and away_team goals. Then, take a union of those queries.
+
+
+
+Note: used sorttable.js to add some basic functionality: you can click the column headers of the table to sort the table. Here is the link to the documentation:
+ https://www.kryogenix.org/code/browser/sorttable/sorttable.js 

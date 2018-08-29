@@ -1,8 +1,6 @@
 David Reiss-Mello
 
-Database account: dsr2141
-
-URL: http://35.196.116.4:8111/ 
+European soccer database in PostreSQL with web front end in Python using Flask
 
 Description of implemented features:
 1)
@@ -21,9 +19,6 @@ Task: "finding teams with similar playstyle based on their favorite team"
 Implementation: Click on "search all teams," and input the name of your favoite team. The table will display information of teams with a rating .5 higher or .5 lower than the searched team.
 
 4)
-
-Old Task: Given the advent of the FIFA World Cup, it will also be helpful to find out the the international domain distribution of players that are playing for top teams in the domestic domain (for example, how many of Chelsea’s (top English team) playing team is playing for Brazil (top international squad). However, this is impossible given that earlier in the part 1 description we mentioned that a player can only be part of 1 team.
-
 New Task: Predict who will win a match.
 
 Implementation: To do this, go to "Predict a score between two teams" and enter the home team and the away team. This query will calculate the difference in goals when the home team plays at home and hte difference in goals when the away team plays away, thus controlling for home vs away biases. The value will be an indicator of how much each team is likely to win by. The team with the highest value is likelier to win.
@@ -73,4 +68,4 @@ Explanation: In the first half of the query, I took the sum of all the goals the
 
 
 Note: used sorttable.js to add some basic functionality: you can click the column headers of the table to sort the table. Here is the link to the documentation:
- https://www.kryogenix.org/code/browser/sorttable/sorttable.js 
+ https://www.kryogenix.org/code/browser/sorttable/sorttable.js
